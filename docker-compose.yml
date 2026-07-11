@@ -1,0 +1,41 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      target: runtime
+    container_name: chat-backend
+    environment:
+      - PORT=3000
+      - DB_PATH=/app/data/chat.sqlite
+      - NODE_ENV=production
+    volumes:
+      - chat-data:/app/data
+    ports:
+      - "3000:3000"
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3000/api/health', r => process.exit(r.statusCode===200?0:1)).on('error', () => process.exit(1))"]
+      interval: 15s
+      timeout: 3s
+      retries: 3
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: chat-frontend
+    depends_on:
+      backend:
+        condition: service_healthy
+    ports:
+      - "8080:80"
+    restart: unless-stopped
+
+  backend-test:
+    build:
+      context: ./backend
+      target: test
+    container_name: chat-backend-test
+    profiles: ["test"]
+
+volumes:
+  chat-data:
