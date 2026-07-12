@@ -20,19 +20,18 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm'
-          cache-dependency-path: ./backend/package-lock.json
+          # Le cache est volontairement supprimé pour éviter l'erreur de résolution de chemin
 
       - name: Install dependencies
         run: npm ci
 
-      - name: Run lint
+      - name: Run lint (si ESLint est configuré)
         run: npm run lint || echo "No lint script"
 
       - name: Run tests with coverage
         run: npm test -- --coverage
 
-      - name: Upload coverage
+      - name: Upload coverage report (optionnel)
         uses: actions/upload-artifact@v4
         with:
           name: coverage-report
