@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./backend   # ← Important : on se place dans backend
+        working-directory: ./backend
 
     steps:
       - uses: actions/checkout@v4
@@ -21,21 +21,19 @@ jobs:
         with:
           node-version: '20'
           cache: 'npm'
-          cache-dependency-path: ./backend/package-lock.json   # ← Spécifie le chemin exact
+          cache-dependency-path: ./backend/package-lock.json
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
-      - name: Run lint (si vous avez ESLint configuré)
+      - name: Run lint
         run: npm run lint || echo "No lint script"
 
       - name: Run tests with coverage
         run: npm test -- --coverage
 
-      - name: Upload coverage (optionnel)
+      - name: Upload coverage
         uses: actions/upload-artifact@v4
         with:
           name: coverage-report
           path: ./backend/coverage/
-
-  # Si vous avez aussi des tests pour le frontend (ex: React), ajoutez un job similaire pour frontend
