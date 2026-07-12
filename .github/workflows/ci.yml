@@ -20,10 +20,10 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          # Le cache est volontairement supprimé pour éviter l'erreur de résolution de chemin
+          # Cache supprimé pour éviter l'erreur précédente
 
       - name: Install dependencies
-        run: npm ci
+        run: npm install   # ← changé de npm ci à npm install
 
       - name: Run lint (si ESLint est configuré)
         run: npm run lint || echo "No lint script"
